@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="theme-color" content="#060912"/>
+  <title>DBCooker — AI-Powered Database Engineering Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- Code cloud canvas (bottom layer) -->
+<canvas id="cloud-canvas" aria-hidden="true"></canvas>
+<!-- Code rain canvas (top layer) -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="logo" href="#">
+      <svg class="logo-hex" width="28" height="32" viewBox="0 0 28 32" fill="none" aria-hidden="true">
+        <path d="M14 1.5L26.5 8.5V23.5L14 30.5L1.5 23.5V8.5L14 1.5Z"
+              stroke="#00D4FF" stroke-width="1.4" fill="rgba(0,212,255,0.06)"/>
+        <text x="14" y="21" text-anchor="middle"
+              font-family="Space Grotesk" font-size="9" font-weight="700" fill="#00D4FF">DB</text>
+      </svg>
+      <span class="logo-name">DB<span class="logo-hi">Cooker</span></span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="#cases">Cases</a></li>
+        <li><a href="#compare">Compare</a></li>
+        <li><a href="#features">Features</a></li>
+        <!-- <li><a href="#databases">Databases</a></li> -->
+        <li><a href="#quickstart">Quickstart</a></li>
+
+      </ul>
+    </nav>
+
+    <a class="btn btn-cta" href="#quickstart">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+      </svg>
+      Get Started
+    </a>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-text">
+    <div class="eyebrow-row">
+      <span class="pill pill-cyan"><span class="pill-dot"></span>v1.0 · Live</span>
+      <span class="pill">Database-Native · Feature-Driven · Multi-Agent</span>
+    </div>
+
+    <h1 class="hero-h1">
+      The AI Agent That<br/>
+      <span class="type-wrap">
+        <span id="typer" class="text-grad"></span><span class="type-cur">|</span>
+      </span>
+    </h1>
+
+    <p class="hero-p">
+      DBCooker autonomously implements database native functions. Four-layer memory, orchestrated subagents, and provider-agnostic
+      LLM support — purpose-built for database kernel engineering.
+    </p>
+
+    <div class="hero-btns">
+      <a class="btn btn-cta btn-lg" href="https://github.com/" target="_blank" rel="noopener noreferrer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+        </svg>
+        Start Cooking
+      </a>
+      <a class="btn btn-outline btn-lg" href="#cases">Success Cases</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><span class="hstat-n" data-target="6">6</span><span class="hstat-l">Databases</span></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><span class="hstat-n" data-target="4">4</span><span class="hstat-l">Memory Layers</span></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><span class="hstat-n" data-target="3">3</span><span class="hstat-l">Agent Roles</span></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><span class="hstat-n">∞</span><span class="hstat-l">LLM Providers</span></div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT COLUMN: mascot (small) + terminal ══════════ -->
+  <div class="hero-right">
+
+  <!-- 4 workflow robot mascots -->
+  <div class="wfr-row">
+
+    <!-- ── Plan robot: cyan, scanning eyes, magnifier ── -->
+    <div class="wfr-item active" id="wfr0">
+      <svg class="wfr-svg" viewBox="0 0 80 112" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+        <g class="wfr-g-plan">
+          <!-- Orange chef hat -->
+          <rect x="12" y="0" width="56" height="22" rx="5" fill="#F97316"/>
+          <rect x="12" y="0" width="56" height="8"  rx="5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="5"  y="20" width="70" height="7"  rx="4" fill="#C2510A"/>
+          <!-- Magnifying glass (Plan tool) -->
+          <circle cx="70" cy="10" r="8" stroke="#00D4FF" stroke-width="2" fill="rgba(0,212,255,0.08)"/>
+          <line x1="76" y1="16" x2="78" y2="22" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Body (narrower) -->
+          <rect x="8"  y="27" width="64" height="42" rx="13" fill="rgba(0,212,255,0.18)" stroke="#00D4FF" stroke-width="1.4"/>
+
+          <!-- Eyes -->
+          <rect x="17" y="41" width="18" height="16" rx="6" fill="#00D4FF"/>
+          <rect class="wfr-ppl" x="21" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <rect x="45" y="41" width="18" height="16" rx="6" fill="#00D4FF"/>
+          <rect class="wfr-ppl" x="49" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <!-- Mouth -->
+          <circle cx="40" cy="62" r="4" fill="#00D4FF"/>
+          <!-- Legs -->
+          <rect x="16" y="70" width="16" height="9" rx="5" fill="rgba(0,212,255,0.18)" stroke="#00D4FF" stroke-width="1.1"/>
+          <rect x="48" y="70" width="16" height="9" rx="5" fill="rgba(0,212,255,0.18)" stroke="#00D4FF" stroke-width="1.1"/>
+        </g>
+      </svg>
+      <span class="wfr-name">Plan</span>
+      <span class="wfr-desc">Scopes repo</span>
+    </div>
+
+    <!-- ── Code robot: blue, typing arms, cursor blink ── -->
+    <div class="wfr-item" id="wfr1">
+      <svg class="wfr-svg" viewBox="0 0 80 112" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+        <g class="wfr-g-code">
+          <!-- Orange chef hat -->
+          <rect x="12" y="0" width="56" height="22" rx="5" fill="#F97316"/>
+          <rect x="12" y="0" width="56" height="8"  rx="5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="5"  y="20" width="70" height="7"  rx="4" fill="#C2510A"/>
+          <!-- Typing arms — behind body -->
+          <rect class="wfr-al" x="1" y="40" width="7" height="16" rx="3.5" fill="rgba(74,222,128,0.18)" stroke="#4ADE80" stroke-width="1.1"/>
+          <g class="wfr-ar">
+            <rect x="72" y="40" width="7" height="16" rx="3.5" fill="rgba(74,222,128,0.18)" stroke="#4ADE80" stroke-width="1.1"/>
+          </g>
+          <!-- Body (narrower) -->
+          <rect x="8"  y="27" width="64" height="42" rx="13" fill="rgba(74,222,128,0.18)" stroke="#4ADE80" stroke-width="1.4"/>
+          <!-- Spatula (Code tool) — drawn after body = visible -->
+          <rect x="72" y="44" width="14" height="6" rx="3" fill="#4ADE80" opacity="0.88"/>
+          <line x1="72" y1="47" x2="72" y2="40" stroke="#4ADE80" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- Eyes -->
+          <rect x="17" y="41" width="18" height="16" rx="6" fill="#4ADE80"/>
+          <rect x="21" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <rect x="45" y="41" width="18" height="16" rx="6" fill="#4ADE80"/>
+          <rect x="49" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <!-- Mouth (upper half chevron, gentle slope) -->
+          <line x1="34" y1="60" x2="46" y2="63" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+
+          <!-- Legs -->
+          <rect x="16" y="70" width="16" height="9" rx="5" fill="rgba(74,222,128,0.18)" stroke="#4ADE80" stroke-width="1.1"/>
+          <rect x="48" y="70" width="16" height="9" rx="5" fill="rgba(74,222,128,0.18)" stroke="#4ADE80" stroke-width="1.1"/>
+          <!-- Blinking cursor below -->
+          <rect class="wfr-cur" x="36" y="80" width="8" height="11" rx="2.5" fill="#4ADE80"/>
+        </g>
+      </svg>
+      <span class="wfr-name">Code</span>
+      <span class="wfr-desc">Implements</span>
+    </div>
+
+    <!-- ── Test robot: green, checkmark badge, pupils look down ── -->
+    <div class="wfr-item" id="wfr2">
+      <svg class="wfr-svg" viewBox="0 0 80 112" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+        <g class="wfr-g-test">
+          <!-- Orange chef hat -->
+          <rect x="12" y="0" width="56" height="22" rx="5" fill="#F97316"/>
+          <rect x="12" y="0" width="56" height="8"  rx="5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="5"  y="20" width="70" height="7"  rx="4" fill="#C2510A"/>
+          <!-- Body (narrower) -->
+          <rect x="8"  y="27" width="64" height="42" rx="13" fill="rgba(248,113,113,0.18)" stroke="#F87171" stroke-width="1.4"/>
+          <!-- Tasting spoon (left, drawn after body = visible) -->
+          <line x1="4" y1="38" x2="4" y2="58" stroke="#F87171" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="4" cy="35" rx="5" ry="4" fill="rgba(248,113,113,0.22)" stroke="#F87171" stroke-width="1.6"/>
+
+          <!-- Eyes (look-down pupils) -->
+          <rect x="17" y="41" width="18" height="16" rx="6" fill="#F87171"/>
+          <rect class="wfr-tpl" x="21" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <rect x="45" y="41" width="18" height="16" rx="6" fill="#F87171"/>
+          <rect class="wfr-tpl" x="49" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <!-- Mouth (nervous zigzag) -->
+          <path d="M33 62 L37 59 L43 65 L47 62" stroke="#F87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- Checkmark badge (right chest) -->
+          <circle cx="61" cy="63" r="7" fill="#1e0808" stroke="#F87171" stroke-width="1.6"/>
+          <path d="M55 63 l4 4 8-8" stroke="#F87171" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- Legs -->
+          <rect x="16" y="70" width="16" height="9" rx="5" fill="rgba(248,113,113,0.18)" stroke="#F87171" stroke-width="1.1"/>
+          <rect x="48" y="70" width="16" height="9" rx="5" fill="rgba(248,113,113,0.18)" stroke="#F87171" stroke-width="1.1"/>
+        </g>
+      </svg>
+      <span class="wfr-name">Test</span>
+      <span class="wfr-desc">Verifies</span>
+    </div>
+
+    <!-- ── Done robot: amber, raised arms, star spark ── -->
+    <div class="wfr-item" id="wfr3">
+      <svg class="wfr-svg" viewBox="0 0 80 112" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+        <g class="wfr-g-done">
+          <!-- Orange chef hat with celebration star -->
+          <rect x="12" y="0" width="56" height="22" rx="5" fill="#F97316"/>
+          <rect x="12" y="0" width="56" height="8"  rx="5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="5"  y="20" width="70" height="7"  rx="4" fill="#C2510A"/>
+          <text class="wfr-star" x="40" y="15" font-size="13" fill="rgba(255,255,255,0.92)" text-anchor="middle">★</text>
+          <!-- Raised arms + ladle (before body) -->
+          <g class="wfr-dal">
+            <rect x="1" y="38" width="7" height="16" rx="3.5" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.1"/>
+          </g>
+          <g class="wfr-dar">
+            <rect x="72" y="38" width="7" height="16" rx="3.5" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.1"/>
+            <circle cx="75" cy="57" r="6" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.6"/>
+            <line x1="75" y1="51" x2="75" y2="38" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+          <!-- Body (narrower) -->
+          <rect x="8"  y="27" width="64" height="42" rx="13" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.4"/>
+
+          <!-- Eyes -->
+          <rect x="17" y="41" width="18" height="16" rx="6" fill="#FBBF24"/>
+          <rect class="wfr-dpl" x="21" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <rect x="45" y="41" width="18" height="16" rx="6" fill="#FBBF24"/>
+          <rect class="wfr-dpl" x="49" y="45" width="9" height="8" rx="3" fill="#04111e"/>
+          <!-- Mouth (happy inverted triangle) -->
+          <path d="M33 59 L47 59 L40 67 Z" fill="#FBBF24"/>
+          <!-- Legs -->
+          <rect x="16" y="70" width="16" height="9" rx="5" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.1"/>
+          <rect x="48" y="70" width="16" height="9" rx="5" fill="rgba(251,191,36,0.18)" stroke="#FBBF24" stroke-width="1.1"/>
+        </g>
+      </svg>
+      <span class="wfr-name">Done</span>
+      <span class="wfr-desc">Patch shipped</span>
+    </div>
+
+  </div><!-- end wfr-row -->
+
+  <!-- Terminal card (inline in hero right) -->
+  <div class="hero-term-wrap">
+    <div class="demo-label">
+      <span class="demo-dot"></span>Live Session
+    </div>
+    <div class="term-card">
+      <div class="term-chrome">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="term-title">dbcooker — bash</span>
+      </div>
+      <div class="term-body">
+        <div class="t-ln"><span class="t-ps">❯</span> dbcooker --target postgresql --func array_to_string</div>
+        <div class="t-ln tl" id="tl1"><span class="t-kw">[PlanAgent]</span>  Scanning /src/backend/utils/adt/varlena.c ...</div>
+        <div class="t-ln tl" id="tl2"><span class="t-kw">[Memory]</span>     Loading episodic context · 12 prior tasks found</div>
+        <div class="t-ln tl" id="tl3"><span class="t-kw">[CodeAgent]</span>  Located PG_FUNCTION_INFO_V1 registration site</div>
+        <div class="t-ln tl" id="tl4"><span class="t-kw">[CodeAgent]</span>  Writing · builtins.c · pg_proc.dat · sql/functions.sql</div>
+        <div class="t-ln tl" id="tl5"><span class="t-ok">✔</span> array_to_string — implementation complete</div>
+        <div class="t-ln tl" id="tl6"><span class="t-kw">[TestAgent]</span>  Running pg_regress · 48 / 48 passed</div>
+        <div class="t-ln tl" id="tl7"><span class="t-ok">✔</span> Patch ready · 3 files · 0 regressions</div>
+      </div>
+    </div>
+  </div><!-- end hero-term-wrap -->
+
+  </div><!-- end hero-right -->
+</section>
+
+<!-- ═══ COMPARE ══════════════════════════════════════════ -->
+<section class="section section-glass cases-stage" id="cases" data-success-cases-root data-sync-hash="false" data-cases-layout="carousel-fixed" data-autoplay-ms="5400">
+  <div class="wrap">
+    <div class="sec-head reveal cases-head">
+      <div class="eyebrow">Verified Success Cases</div>
+      <h2 class="sec-h2">Function Intent In,<br/><span class="text-grad">Kernel Patch Out</span></h2>
+      <p class="sec-sub">
+        DBCooker turns requested database capability into real engine implementation.
+      </p>
+    </div>
+
+    <div class="cases-shell reveal">
+      <div class="cases-source-col">
+        <div class="cases-source-frame">
+          <div class="cases-source-bar">
+            <div class="eyebrow">Source Context</div>
+          </div>
+          <div class="case-carousel-window">
+            <button class="cases-nav-btn cases-nav-btn--prev" id="cases-prev" type="button" aria-label="Previous case">
+              <span aria-hidden="true">&larr;</span>
+            </button>
+            <div class="case-list case-carousel-track" id="case-list"></div>
+            <button class="cases-nav-btn cases-nav-btn--next" id="cases-next" type="button" aria-label="Next case">
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cases-detail-col">
+        <section class="detail-panel" id="case-detail" aria-live="polite"></section>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="compare">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Competitive Landscape</div>
+      <h2 class="sec-h2">How DBCooker<br/><span class="text-grad">Stands Apart</span></h2>
+      <p class="sec-sub">The only AI coding agent designed from day one for database kernel engineering.</p>
+    </div>
+    <!-- Video placeholder -->
+    <div class="video-ph reveal">
+      <div class="video-ph-play">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" stroke="rgba(0,212,255,0.35)" stroke-width="1.5"/>
+          <circle cx="32" cy="32" r="30" stroke="rgba(0,212,255,0.08)" stroke-width="12"/>
+          <path d="M26 22l20 10-20 10V22z" fill="rgba(0,212,255,0.75)"/>
+        </svg>
+      </div>
+      <p class="video-ph-label">Demo Video — Coming Soon</p>
+      <p class="video-ph-sub">End-to-end walkthrough: DBCooker autonomously implementing a PostgreSQL kernel function from task input to verified patch</p>
+    </div>
+    <div class="cmp-wrap reveal">
+      <table class="cmp">
+        <thead><tr>
+          <th class="cmp-feat">Capability</th>
+          <th class="cmp-db">DBCooker</th>
+          <th>Claude Code</th><th>Codex</th><th>OpenCode</th><th>OpenClaw</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="cmp-feat">Database-Kernel Focus</td><td class="cmp-db"><span class="cy">✦ Native</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Multi-Layer Memory</td><td class="cmp-db"><span class="cy">✦ 4 Layers</span></td><td><span class="cp">~ Basic</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cp">~ Partial</span></td></tr>
+          <tr><td class="cmp-feat">Subagent Orchestration</td><td class="cmp-db"><span class="cy">✦ Plan+Test</span></td><td><span class="cy">✦</span></td><td><span class="cn">✗</span></td><td><span class="cp">~ Build/Plan</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Provider-Agnostic LLM</td><td class="cmp-db"><span class="cy">✦ Any</span></td><td><span class="cn">✗ Anthropic only</span></td><td><span class="cn">✗ OpenAI only</span></td><td><span class="cy">✦</span></td><td><span class="cp">~ Limited</span></td></tr>
+          <tr><td class="cmp-feat">Dynamic Skills</td><td class="cmp-db"><span class="cy">✦ Runtime</span></td><td><span class="cp">~ MCP tools</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Docker Isolation</td><td class="cmp-db"><span class="cy">✦</span></td><td><span class="cn">✗</span></td><td><span class="cp">~ Partial</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Research Instrumentation</td><td class="cmp-db"><span class="cy">✦ Full</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Built-in Benchmarks</td><td class="cmp-db"><span class="cy">✦ Per-DB</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td><td><span class="cn">✗</span></td></tr>
+          <tr><td class="cmp-feat">Batch + Interactive</td><td class="cmp-db"><span class="cy">✦ Both</span></td><td><span class="cp">~ Interactive</span></td><td><span class="cp">~ Interactive</span></td><td><span class="cp">~ Interactive</span></td><td><span class="cp">~ Interactive</span></td></tr>
+          <tr><td class="cmp-feat">Open Architecture</td><td class="cmp-db"><span class="cy">✦</span></td><td><span class="cn">✗ Closed</span></td><td><span class="cn">✗ Closed</span></td><td><span class="cy">✦</span></td><td><span class="cy">✦</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp-legend"><span class="cy">✦</span> Supported &nbsp; <span class="cp">~</span> Partial &nbsp; <span class="cn">✗</span> Not supported</p>
+  </div>
+</section>
+
+<!-- ═══ FEATURES + DATABASES ═════════════════════════════ -->
+<section class="section section-glass" id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">How It Works</div>
+      <h2 class="sec-h2">Built Different,<br/><span class="text-grad">Built for Databases</span></h2>
+      <p class="sec-sub">Three specialized agents, six capabilities, six databases — built from the ground up for kernel engineering.</p>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline reveal">
+      <div class="pl-node pl-input"><span class="pl-label">Task Input</span><span class="pl-sub">CLI · Shell · Script</span></div>
+      <div class="pl-arr">→</div>
+      <div class="pl-node pl-plan"><span class="pl-badge">Read-only</span><span class="pl-label">PlanAgent</span><span class="pl-sub">Repository scoping</span></div>
+      <div class="pl-arr">→</div>
+      <div class="pl-node pl-core"><span class="pl-badge">Orchestrator</span><span class="pl-label">CodeAgent</span><span class="pl-sub">Implements · Coordinates</span></div>
+      <div class="pl-arr">→</div>
+      <div class="pl-node pl-test"><span class="pl-badge">Validator</span><span class="pl-label">TestAgent</span><span class="pl-sub">Verifies patch</span></div>
+      <div class="pl-arr">→</div>
+      <div class="pl-node pl-output"><span class="pl-label">Verified Patch</span><span class="pl-sub">Trajectory · Diff</span></div>
+    </div>
+    <div class="pl-mem reveal">
+      <span class="pl-mem-label">MemoryManager</span>
+      <span class="aml" style="--mc:#00D4FF">Working</span>
+      <span class="aml" style="--mc:#2563EB">Episodic</span>
+      <span class="aml" style="--mc:#F97316">Project</span>
+      <span class="aml" style="--mc:#7C3AED">Long-Term</span>
+    </div>
+
+    <!-- Capabilities -->
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-cyan">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="1" y="1" width="7" height="7" rx="1.5" stroke="#00D4FF" stroke-width="1.4"/>
+            <rect x="12" y="1" width="7" height="7" rx="1.5" stroke="#00D4FF" stroke-width="1.4"/>
+            <rect x="1" y="12" width="7" height="7" rx="1.5" stroke="#00D4FF" stroke-width="1.4"/>
+            <rect x="12" y="12" width="7" height="7" rx="1.5" stroke="#00D4FF" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <h3>Four-Layer Memory</h3>
+        <p>Working → Episodic → Project → Long-Term across sessions.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-blue">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2l8 4.5v7L10 18l-8-4.5v-7L10 2z" stroke="#2563EB" stroke-width="1.4" stroke-linejoin="round"/>
+            <circle cx="10" cy="10" r="2.5" fill="#2563EB" opacity="0.5"/>
+          </svg>
+        </div>
+        <h3>Provider-Agnostic Models</h3>
+        <p>Anthropic, OpenAI, Doubao, ModelScope — swap per agent independently.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-orange">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="3.5" r="2" stroke="#F97316" stroke-width="1.4"/>
+            <circle cx="3.5" cy="15.5" r="2" stroke="#F97316" stroke-width="1.4"/>
+            <circle cx="16.5" cy="15.5" r="2" stroke="#F97316" stroke-width="1.4"/>
+            <path d="M10 5.5v4.5M10 10L3.5 13.5M10 10L16.5 13.5" stroke="#F97316" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Subagent Orchestration</h3>
+        <p>PlanAgent scopes read-only. CodeAgent implements. TestAgent verifies.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-purple">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L2 6v8l8 4 8-4V6L10 2z" stroke="#7C3AED" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M2 6l8 4 8-4M10 10v8" stroke="#7C3AED" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Dynamic Skills</h3>
+        <p>Drop a <code>SKILL.md</code> folder on the path — loaded at runtime.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-cyan">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <ellipse cx="10" cy="5.5" rx="7" ry="2.5" stroke="#00D4FF" stroke-width="1.4"/>
+            <path d="M3 5.5v5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5v-5" stroke="#00D4FF" stroke-width="1.4"/>
+            <path d="M3 10.5v4c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5v-4" stroke="#00D4FF" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <h3>DB-Native Knowledge</h3>
+        <p>Deep understanding of registration macros, type systems, build conventions.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="bc-icon bc-icon-orange">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M17.5 17.5l-3.5-3.5M9 16A7 7 0 1 1 9 2a7 7 0 0 1 0 14z" stroke="#F97316" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M9 6.5v2.5l1.5 1.5" stroke="#F97316" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Research Instrumentation</h3>
+        <p>Trajectory logs, Docker isolation, per-database benchmarks.</p>
+      </div>
+    </div>
+
+    <!-- Target databases -->
+    <!-- <div class="db-bar reveal" id="databases">
+      <div class="db-pill"><span class="db-badge db-pg">PG</span> PostgreSQL</div>
+      <div class="db-pill"><span class="db-badge db-sq">SQ</span> SQLite</div>
+      <div class="db-pill"><span class="db-badge db-dd">DD</span> DuckDB</div>
+      <div class="db-pill"><span class="db-badge db-ch">CH</span> ClickHouse</div>
+      <div class="db-pill"><span class="db-badge db-my">MY</span> MySQL</div>
+      <div class="db-pill"><span class="db-badge db-ob">OB</span> OceanBase</div>
+    </div> -->
+  </div>
+</section>
+
+<!-- ═══ QUICKSTART ════════════════════════════════════════ -->
+<section class="section" id="quickstart">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Get Started</div>
+      <h2 class="sec-h2">Up &amp; Running<br/><span class="text-grad">in Minutes</span></h2>
+    </div>
+    <div class="qs-grid">
+      <div class="qs-step reveal">
+        <div class="qs-n">01</div><div class="qs-title">Install</div>
+        <div class="codebox"><div class="cb-bar"><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre><code>pip install -r requirements.txt</code></pre></div>
+      </div>
+      <div class="qs-step reveal">
+        <div class="qs-n">02</div><div class="qs-title">Configure</div>
+        <div class="codebox"><div class="cb-bar"><span class="cb-lang">yaml</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre><code>model:
+  provider: anthropic
+  name: claude-sonnet-4-6
+database: postgresql</code></pre></div>
+      </div>
+      <div class="qs-step reveal">
+        <div class="qs-n">03</div><div class="qs-title">Run</div>
+        <div class="codebox"><div class="cb-bar"><span class="cb-lang">bash</span><button class="cb-copy" onclick="copyCode(this)">Copy</button></div><pre><code># Batch mode
+python agent_main.py --config code_config.yaml
+
+# Interactive shell
+dbcooker --interactive</code></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ══════════════════════════════════════════════ -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <h2 class="cta-h2">Ready to Cook?</h2>
+      <p class="cta-sub">Start implementing database kernel functions autonomously — across any of six production databases.</p>
+      <a class="btn btn-cta btn-xl" href="https://github.com/" target="_blank" rel="noopener noreferrer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+        </svg>
+        Get Started Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="logo">
+        <svg class="logo-hex" width="22" height="26" viewBox="0 0 28 32" fill="none" aria-hidden="true">
+          <path d="M14 1.5L26.5 8.5V23.5L14 30.5L1.5 23.5V8.5L14 1.5Z" stroke="#00D4FF" stroke-width="1.4" fill="rgba(0,212,255,0.06)"/>
+          <text x="14" y="21" text-anchor="middle" font-family="Space Grotesk" font-size="9" font-weight="700" fill="#00D4FF">DB</text>
+        </svg>
+        <span class="logo-name">DB<span class="logo-hi">Cooker</span></span>
+      </div>
+      <div class="footer-tag">AI-Powered Database Kernel Engineering</div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#cases">Cases</a>
+        <a href="#compare">Compare</a>
+        <a href="#features">Features</a>
+        <a href="#quickstart">Quickstart</a>
+      </nav>
+      <div class="footer-copy">Built for database engineers and researchers</div>
+    </div>
+  </div>
+</footer>
+
+<script src="success-cases-data.js"></script>
+<script src="success-cases.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

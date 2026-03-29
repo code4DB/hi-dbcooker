@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#060912">
+  <title>DBCooker | Successful Conversion Cases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="success-cases.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html">
+        <svg class="logo-hex" width="28" height="32" viewBox="0 0 28 32" fill="none" aria-hidden="true">
+          <path d="M14 1.5L26.5 8.5V23.5L14 30.5L1.5 23.5V8.5L14 1.5Z"
+                stroke="#00D4FF" stroke-width="1.4" fill="rgba(0,212,255,0.06)"></path>
+          <text x="14" y="21" text-anchor="middle"
+                font-family="Space Grotesk" font-size="9" font-weight="700" fill="#00D4FF">DB</text>
+        </svg>
+        <span class="logo-name">DB<span class="logo-hi">Cooker</span></span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html">Homepage</a></li>
+          <li><a href="#workspace">Case Browser</a></li>
+          <li><a href="#case-detail">Case Detail</a></li>
+        </ul>
+      </nav>
+
+      <a class="btn btn-cta" href="#workspace">Browse Cases</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow-row">
+          <span class="pill pill-cyan"><span class="pill-dot"></span>Appendix-backed</span>
+          <span class="pill">Case-level organization</span>
+          <span class="pill">Validated mapping</span>
+        </div>
+        <p class="eyebrow">Success Cases</p>
+        <h1>Successful conversions, organized one case at a time.</h1>
+        <p class="hero-text">
+          This page is generated from <code>sample-sigconf.tex</code>. Each case keeps its own
+          description, touched files, and exact diff together, with a name-match validation between
+          <code>\subsection</code> and <code>\begin{gitdiffbox}</code> before it is rendered.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-cta btn-lg" href="#workspace">Open Case Browser</a>
+          <a class="btn btn-outline btn-lg" href="index.html">Back to Homepage</a>
+        </div>
+      </div>
+
+      <aside class="hero-card">
+        <p class="hero-card-label">Why this view works</p>
+        <ul class="hero-points">
+          <li>Cards keep overview and code provenance visible together.</li>
+          <li>Filters make it easy to switch across function families.</li>
+          <li>The detail panel always shows the full diff for the selected case.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="summary-section">
+      <div class="section-head">
+        <p class="eyebrow">At A Glance</p>
+        <h2>Converted cases with traceable source anchors.</h2>
+      </div>
+      <div class="summary-grid" id="summary-grid"></div>
+    </section>
+
+    <section class="workspace-section" id="workspace">
+      <div class="toolbar">
+        <div>
+          <p class="eyebrow">Case Browser</p>
+          <h2>Filter, switch, and inspect successful conversions.</h2>
+        </div>
+        <label class="search-shell" for="case-search">
+          <span class="search-label">Search</span>
+          <input id="case-search" type="search" placeholder="Find a function, file, or family">
+        </label>
+      </div>
+
+      <div class="filter-row" id="family-filters" aria-label="Case family filters"></div>
+
+      <div class="case-shell">
+        <aside class="browser-panel card">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Selected from appendix</p>
+              <h3>Case Cards</h3>
+            </div>
+            <span class="panel-count" id="case-count"></span>
+          </div>
+          <div class="case-list" id="case-list"></div>
+        </aside>
+
+        <section class="detail-panel" id="case-detail" aria-live="polite"></section>
+      </div>
+    </section>
+  </main>
+
+  <script src="success-cases-data.js"></script>
+  <script src="success-cases.js"></script>
+</body>
+</html>
