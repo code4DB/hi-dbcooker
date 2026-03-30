@@ -1,4 +1,4 @@
-/* ════════════════════════════════════════════════════════
+﻿/* ════════════════════════════════════════════════════════
    DBCooker  —  style.css  v4
    Cyan/Blue primary · Code rain BG · Blocky chef mascot
    Fonts: Space Grotesk (heading) + DM Sans (body) + JetBrains Mono (code)
@@ -108,10 +108,6 @@ code {
   margin: 0 auto -8px;
   position: relative;
   z-index: 8;
-}
-.hero-top-pills,
-.hero-text > .eyebrow-row {
-  display: none;
 }
 .pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1666,3 +1662,4 @@ code {
     padding: 20px;
   }
 }
+
