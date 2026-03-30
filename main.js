@@ -276,10 +276,10 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!el) return;
 
   const phrases = [
-    'Ships Database Kernels',
+    'Ships Databases',
     'Cooks Your Kernels',
-    'Implements Functions',
-    'Automates Engineering',
+    // 'Implements Functions',
+    // 'Automates Engineering',
   ];
 
   let pi = 0, ci = 0, deleting = false;
