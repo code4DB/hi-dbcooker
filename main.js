@@ -25,27 +25,49 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const COLORS = ['#00FF41', '#00D4FF', '#FFC83C'];
 
+  const MAX_WORDS = 22;
   let W, H, words = [];
 
-  function pageH() {
-    return Math.max(document.body.scrollHeight, H * 2);
+  function makeWord(spawnInside, scrollY = window.scrollY) {
+    const fromEdge = Math.random();
+    let x = Math.random() * W;
+    let y = scrollY + Math.random() * H;
+
+    if (!spawnInside) {
+      if (fromEdge < 0.25) {
+        x = -80;
+        y = scrollY + Math.random() * H;
+      } else if (fromEdge < 0.5) {
+        x = W + 80;
+        y = scrollY + Math.random() * H;
+      } else if (fromEdge < 0.75) {
+        x = Math.random() * W;
+        y = scrollY - 40;
+      } else {
+        x = Math.random() * W;
+        y = scrollY + H + 40;
+      }
+    }
+
+    return {
+      text:  TOKENS[Math.floor(Math.random() * TOKENS.length)],
+      x,
+      y,
+      size:  11 + Math.floor(Math.random() * 12),
+      angle: (Math.random() - 0.5) * 0.5,
+      rotV:  (Math.random() - 0.5) * 0.003,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.05 + Math.random() * 0.12,
+      vx:    (Math.random() - 0.5) * 0.16,
+      vy:    (Math.random() - 0.5) * 0.12,
+      life:  0,
+      maxLife: 3200 + Math.random() * 4200,
+    };
   }
 
   function buildWords() {
-    const pH = pageH();
-    words = TOKENS.map(text => ({
-      text,
-      bx:     Math.random() * W,
-      by:     Math.random() * pH,          // spread across full page height
-      size:   10 + Math.floor(Math.random() * 18),
-      angle:  (Math.random() - 0.5) * 0.65,
-      color:  COLORS[Math.floor(Math.random() * COLORS.length)],
-      base:   0.08 + Math.random() * 0.20,
-      phase:  Math.random() * Math.PI * 2,
-      driftX: (Math.random() - 0.5) * 28,
-      driftY: (Math.random() - 0.5) * 20,
-      period: 3000 + Math.random() * 5000,
-    }));
+    const count = Math.max(12, Math.min(MAX_WORDS, Math.floor(W / 70)));
+    words = Array.from({ length: count }, () => makeWord(true));
   }
 
   function resize() {
@@ -61,28 +83,43 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     ctx.clearRect(0, 0, W, H);
     const scrollY = window.scrollY;
-    const t = Date.now();
 
-    words.forEach(w => {
-      // Convert page-space Y to viewport Y
-      const vy = w.by - scrollY;
-      if (vy < -40 || vy > H + 40) return;   // cull off-screen tokens
+    words.forEach((w, i) => {
+      w.life += 50;
+      const vy = w.y - scrollY;
+      if (
+        w.life >= w.maxLife ||
+        w.x < -140 || w.x > W + 140 ||
+        vy < -120 || vy > H + 120
+      ) {
+        words[i] = makeWord(false, scrollY);
+        return;
+      }
 
-      const wave  = Math.sin(t / w.period * Math.PI * 2 + w.phase);
-      const alpha = w.base * Math.abs(wave);
-      if (alpha < 0.005) return;
-
-      const ox = w.driftX * Math.sin(t / 4000 + w.phase);
-      const oy = w.driftY * Math.cos(t / 5500 + w.phase);
+      const fadeIn = Math.min(1, w.life / 900);
+      const fadeOut = Math.min(1, (w.maxLife - w.life) / 1300);
+      const alpha = w.alpha * Math.min(fadeIn, fadeOut);
+      if (alpha < 0.01) {
+        w.x += w.vx;
+        w.y += w.vy;
+        w.angle += w.rotV;
+        return;
+      }
 
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.fillStyle   = w.color;
       ctx.font        = `${w.size}px "JetBrains Mono", monospace`;
-      ctx.translate(w.bx + ox, vy + oy);
+      ctx.textAlign   = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.translate(w.x, vy);
       ctx.rotate(w.angle);
       ctx.fillText(w.text, 0, 0);
       ctx.restore();
+
+      w.x += w.vx;
+      w.y += w.vy;
+      w.angle += w.rotV;
     });
 
     requestAnimationFrame(tick);
@@ -102,17 +139,27 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const heroEl = document.getElementById('hero');
 
   const PCOLS = [[255,255,255],[0,212,255],[120,160,255],[180,220,255]];
+  const TOKENS = [
+    'SELECT', 'JOIN', 'NULL', 'return', 'static', 'const',
+    'Datum', 'int32', 'char*', 'sqlite3', '#define',
+    '->', '{}', '[]', '()', 'VARCHAR', 'BTREE'
+  ];
   let W, H, ptcls = [];
 
   function makePtcl(maxY) {
     const c = PCOLS[Math.floor(Math.random() * PCOLS.length)];
+    const text = TOKENS[Math.floor(Math.random() * TOKENS.length)];
+    const size = 10 + Math.random() * 8;
     return {
       x: Math.random() * W,
       y: Math.random() * (maxY || H * 0.7),
-      r: 0.7 + Math.random() * 2.0,
-      c, vx: (Math.random() - 0.5) * 0.22,
+      text,
+      size,
+      rot: (Math.random() - 0.5) * 0.22,
+      rotV: (Math.random() - 0.5) * 0.0025,
+      c, vx: (Math.random() - 0.5) * 0.18,
       vy: -(0.07 + Math.random() * 0.25),
-      a: 0.35 + Math.random() * 0.55,
+      a: 0.18 + Math.random() * 0.30,
       life: Math.floor(Math.random() * 5000),
       maxLife: 5000 + Math.random() * 7000,
     };
@@ -125,8 +172,8 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function resize() {
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    if (!ptcls.length)
-      ptcls = Array.from({ length: 75 }, () => makePtcl(heroBottom() || H * 0.7));
+    const count = Math.max(20, Math.min(44, Math.floor(W / 34)));
+    ptcls = Array.from({ length: count }, () => makePtcl(heroBottom() || H * 0.7));
   }
 
   let last = 0;
@@ -135,9 +182,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     last = ts;
 
     const yClip = heroBottom();
-    // Gentle fade trail
-    ctx.fillStyle = 'rgba(6,9,18,0.055)';
-    ctx.fillRect(0, 0, W, Math.max(yClip, H));
+    ctx.clearRect(0, 0, W, H);
 
     ptcls.forEach((p, i) => {
       p.life += 50;
@@ -151,13 +196,18 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const [r, g, b] = p.c;
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.shadowBlur  = p.r * 7;
-      ctx.shadowColor = `rgb(${r},${g},${b})`;
+      ctx.shadowBlur  = p.size * 0.55;
+      ctx.shadowColor = `rgba(${r},${g},${b},0.32)`;
       ctx.fillStyle   = `rgb(${r},${g},${b})`;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      ctx.font        = `${p.size}px "JetBrains Mono", monospace`;
+      ctx.textAlign   = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillText(p.text, 0, 0);
       ctx.shadowBlur = 0;
       ctx.restore();
-      p.x += p.vx; p.y += p.vy;
+      p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
     });
 
     requestAnimationFrame(tick);
@@ -415,6 +465,57 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 
 /* ── 10. Copy button ────────────────────────────────────── */
+(function initHeroVideoFallback() {
+  const shell = document.querySelector('.hero-video[data-vimeo-url]');
+  const iframe = shell?.querySelector('iframe');
+  if (!shell || !iframe) return;
+
+  const timeoutMs = 4500;
+  let settled = false;
+  let timeoutId = 0;
+
+  function clearTimer() {
+    if (!timeoutId) return;
+    window.clearTimeout(timeoutId);
+    timeoutId = 0;
+  }
+
+  function setState(state) {
+    shell.dataset.videoState = state;
+  }
+
+  function markReady() {
+    if (settled) return;
+    settled = true;
+    clearTimer();
+    setState('ready');
+  }
+
+  function markFailed() {
+    if (settled) return;
+    settled = true;
+    clearTimer();
+    setState('error');
+  }
+
+  setState('loading');
+  timeoutId = window.setTimeout(markFailed, timeoutMs);
+
+  if (!window.Vimeo || typeof window.Vimeo.Player !== 'function') {
+    return;
+  }
+
+  try {
+    const player = new window.Vimeo.Player(iframe);
+    player.ready().then(markReady).catch(markFailed);
+    if (typeof player.on === 'function') {
+      player.on('error', markFailed);
+    }
+  } catch (error) {
+    markFailed();
+  }
+})();
+
 function copyCode(btn) {
   const pre = btn.closest('.codebox').querySelector('pre');
   navigator.clipboard.writeText(pre.innerText.trim()).then(() => {

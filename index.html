@@ -59,7 +59,6 @@
   </div>
 
   <div class="hero-text">
-
     <h1 class="hero-h1">
       The AI Agent That<br/>
       <span class="type-wrap">
@@ -239,9 +238,68 @@
 
   </div><!-- end wfr-row -->
 
-  <div class="hero-video reveal">
+  <div class="hero-video reveal" data-video-state="loading" data-vimeo-url="https://vimeo.com/1178451557">
     <div class="hero-video-hint" aria-hidden="true">
       <span class="hero-video-cta"><span class="hero-video-pulse"></span>Watch Demo</span>
+    </div>
+    <div class="hero-video-status" aria-live="polite">
+      <div class="hero-video-status-card hero-video-status-card--loading">
+        <div class="hero-video-status-spinner" aria-hidden="true"></div>
+        <p class="hero-video-status-kicker">Connecting to Vimeo</p>
+        <p class="hero-video-status-copy">Loading the demo video...</p>
+      </div>
+      <div class="hero-video-status-card hero-video-status-card--error">
+        <div class="hero-video-status-poster" aria-hidden="true">
+          <div class="hero-video-status-poster-bar">
+            <span class="hero-video-status-badge">Demo Video</span>
+            <span class="hero-video-status-badge hero-video-status-badge--dim">Vimeo</span>
+          </div>
+          <div class="hero-video-status-poster-screen">
+            <div class="hero-video-status-terminal">
+              <div class="hero-video-status-terminal-head">
+                <span class="hero-video-status-terminal-brand">DBCooker v1.0</span>
+                <span class="hero-video-status-terminal-path">E:\code\sqlite</span>
+              </div>
+              <div class="hero-video-status-terminal-body">
+                <div class="hero-video-status-terminal-main">
+                  <span class="hero-video-status-terminal-command">ADD FUNCTION</span>
+                  <span class="hero-video-status-terminal-logo">DBCooker</span>
+                  <span class="hero-video-status-terminal-sub">DATABASE-NATIVE · FEATURE-DRIVEN · MULTI-AGENT</span>
+                  <div class="hero-video-status-terminal-meta">
+                    <span>Ctrl+C interrupt</span>
+                    <span>o open report</span>
+                    <span>/help commands</span>
+                  </div>
+                </div>
+                <div class="hero-video-status-terminal-side">
+                  <span class="hero-video-status-terminal-side-kicker">Live Session</span>
+                  <span class="hero-video-status-terminal-side-stage">Active stage: Test</span>
+                  <div class="hero-video-status-terminal-side-grid">
+                    <span>session</span><span>87597748</span>
+                    <span>model</span><span>glm-5</span>
+                    <span>cwd</span><span>E:\code\sqlite</span>
+                    <span>database</span><span>sqlite</span>
+                  </div>
+                  <div class="hero-video-status-terminal-steps">
+                    <span>Plan</span>
+                    <span>Code</span>
+                    <span class="is-active">Test</span>
+                    <span>Done</span>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-video-status-terminal-input">Ask anything about your database...</div>
+            </div>
+            <div class="hero-video-status-play"></div>
+          </div>
+        </div>
+        <p class="hero-video-status-kicker">Video temporarily unavailable</p>
+        <p class="hero-video-status-copy">
+          Please check your network status. You can also visit the
+          <a class="hero-video-status-inline-link" href="https://vimeo.com/1178451557" target="_blank" rel="noopener noreferrer">source video link: https://vimeo.com/1178451557</a>
+        </p>
+        <a class="hero-video-status-link" href="https://vimeo.com/1178451557" target="_blank" rel="noopener noreferrer">Open Source Video</a>
+      </div>
     </div>
     <iframe
       src="https://player.vimeo.com/video/1178451557?autoplay=1&muted=1&autopause=0&dnt=1&title=0&byline=0&portrait=0"
@@ -540,6 +598,7 @@ dbcooker --interactive</code></pre></div>
 
 <script src="success-cases-data.js"></script>
 <script src="success-cases.js"></script>
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
