@@ -470,50 +470,22 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const iframe = shell?.querySelector('iframe');
   if (!shell || !iframe) return;
 
-  const timeoutMs = 4500;
-  let settled = false;
-  let timeoutId = 0;
+  // Start visible immediately — iframe URL already has autoplay=1&muted=1.
+  // Vimeo Player API is used only for enhanced control when available.
+  shell.dataset.videoState = 'ready';
 
-  function clearTimer() {
-    if (!timeoutId) return;
-    window.clearTimeout(timeoutId);
-    timeoutId = 0;
-  }
-
-  function setState(state) {
-    shell.dataset.videoState = state;
-  }
-
-  function markReady() {
-    if (settled) return;
-    settled = true;
-    clearTimer();
-    setState('ready');
-  }
-
-  function markFailed() {
-    if (settled) return;
-    settled = true;
-    clearTimer();
-    setState('error');
-  }
-
-  setState('loading');
-  timeoutId = window.setTimeout(markFailed, timeoutMs);
-
-  if (!window.Vimeo || typeof window.Vimeo.Player !== 'function') {
-    return;
-  }
+  if (!window.Vimeo || typeof window.Vimeo.Player !== 'function') return;
 
   try {
     const player = new window.Vimeo.Player(iframe);
-    player.ready().then(markReady).catch(markFailed);
+    player.ready().then(async () => {
+      if (typeof player.setMuted === 'function') await player.setMuted(true).catch(() => {});
+      if (typeof player.play === 'function') await player.play().catch(() => {});
+    }).catch(() => {});
     if (typeof player.on === 'function') {
-      player.on('error', markFailed);
+      player.on('error', () => { shell.dataset.videoState = 'error'; });
     }
-  } catch (error) {
-    markFailed();
-  }
+  } catch (_) {}
 })();
 
 function copyCode(btn) {
